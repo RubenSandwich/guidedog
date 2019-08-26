@@ -36,7 +36,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
-// @ts-ignore 1192 - No default export
 var puppeteer_1 = require("puppeteer");
 var ReactDOMServer = require("react-dom/server");
 exports.guideDog = function (reactComp) { return __awaiter(_this, void 0, void 0, function () {
@@ -45,22 +44,22 @@ exports.guideDog = function (reactComp) { return __awaiter(_this, void 0, void 0
         switch (_a.label) {
             case 0:
                 comp = ReactDOMServer.renderToString(reactComp);
-                return [4 /*yield*/, puppeteer_1.default.launch()];
+                return [4, puppeteer_1.launch()];
             case 1:
                 browser = _a.sent();
-                return [4 /*yield*/, browser.newPage()];
+                return [4, browser.newPage()];
             case 2:
                 page = _a.sent();
-                return [4 /*yield*/, page.setContent(comp)];
+                return [4, page.setContent(comp)];
             case 3:
                 _a.sent();
-                return [4 /*yield*/, page.accessibility.snapshot()];
+                return [4, page.accessibility.snapshot()];
             case 4:
                 tree = _a.sent();
-                return [4 /*yield*/, browser.close()];
+                return [4, browser.close()];
             case 5:
                 _a.sent();
-                return [2 /*return*/, tree.children];
+                return [2, tree.children];
         }
     });
 }); };

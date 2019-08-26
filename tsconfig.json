@@ -6,11 +6,11 @@
     "outDir": "./dist",
     "jsx": "react",
     "noImplicitAny": true,
-    "removeComments": false,
+    "removeComments": true,
     "sourceMap": true,
     "declaration": true,
     "skipLibCheck": true
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "**/*.test.ts"]
+  "exclude": ["node_modules", "**/*.test.ts", "**/*.test.tsx"]
 }
