@@ -39,44 +39,27 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // @ts-ignore 1192 - No default export
 var puppeteer_1 = require("puppeteer");
 var ReactDOMServer = require("react-dom/server");
-var browser;
-var page;
-// This is a jest hack. This project should expose a jest present to do this...
-beforeAll(function () { return __awaiter(_this, void 0, void 0, function () {
+exports.guideDog = function (reactComp) { return __awaiter(_this, void 0, void 0, function () {
+    var comp, browser, page, tree;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, puppeteer_1.default.launch()];
+            case 0:
+                comp = ReactDOMServer.renderToString(reactComp);
+                return [4 /*yield*/, puppeteer_1.default.launch()];
             case 1:
                 browser = _a.sent();
                 return [4 /*yield*/, browser.newPage()];
             case 2:
                 page = _a.sent();
-                return [2 /*return*/];
-        }
-    });
-}); });
-afterAll(function () { return __awaiter(_this, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, browser.close()];
-            case 1:
-                _a.sent();
-                return [2 /*return*/];
-        }
-    });
-}); });
-exports.guideDog = function (reactComp) { return __awaiter(_this, void 0, void 0, function () {
-    var comp, tree;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                comp = ReactDOMServer.renderToString(reactComp);
                 return [4 /*yield*/, page.setContent(comp)];
-            case 1:
+            case 3:
                 _a.sent();
                 return [4 /*yield*/, page.accessibility.snapshot()];
-            case 2:
+            case 4:
                 tree = _a.sent();
+                return [4 /*yield*/, browser.close()];
+            case 5:
+                _a.sent();
                 return [2 /*return*/, tree.children];
         }
     });

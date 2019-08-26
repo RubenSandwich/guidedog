@@ -1,6 +1,6 @@
 {
   "name": "@rubennic/guidedog",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "./dist/index",
   "repository": "https://github.com/RubenSandwich/guidedog",
   "author": "Ruben Niculcea <ruben.niculcea@gmail.com>",
