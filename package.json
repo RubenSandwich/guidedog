@@ -31,5 +31,5 @@
     "puppeteer": "^1.19.0",
     "puppeteer-core": "^1.19.0",
     "react-dom": "^16.9.0"
-  },
+  }
 }
