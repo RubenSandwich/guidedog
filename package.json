@@ -1,10 +1,11 @@
 {
-  "name": "guide-dog",
+  "name": "@rubennic/guidedog",
   "version": "0.0.1",
   "main": "./dist/index",
   "repository": "https://github.com/RubenSandwich/guidedog",
   "author": "Ruben Niculcea <ruben.niculcea@gmail.com>",
   "license": "MIT",
+  "private": false,
   "scripts": {
     "build": "yarn run removeBuild && tsc --build",
     "removeBuild": "rm -rf ./dist && mkdir ./dist",

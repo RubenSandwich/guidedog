@@ -10,12 +10,12 @@ It currently only produces accessability trees for React components, which can t
 
 ## Use:
 ```bash
-yarn add --dev guide-dog
+yarn add --dev @rubennic/guidedog
 ```
 
 In your jest file:
 ```jsx
-import { guideDog } from 'guide-dog';
+import { guideDog } from '@rubennic/guidedog';
 
 test('guideDog test', async () => {
   const accessibilityTree = await guideDog(<TestComp/>);
