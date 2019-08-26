@@ -1,0 +1,37 @@
+{
+  "name": "guide-dog",
+  "version": "0.0.1",
+  "main": "./dist/index",
+  "repository": "https://github.com/RubenSandwich/guidedog",
+  "author": "Ruben Niculcea <ruben.niculcea@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "build": "yarn run removeBuild && tsc --build",
+    "removeBuild": "rm -rf ./dist && mkdir ./dist",
+    "test": "jest",
+    "lint": "tslint \"src/**/*.ts\""
+  },
+  "devDependencies": {
+    "@babel/core": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "@babel/preset-typescript": "^7.3.3",
+    "@types/jest": "^24.0.18",
+    "@types/puppeteer": "^1.19.1",
+    "@types/react-dom": "^16.9.0",
+    "babel-jest": "^24.9.0",
+    "prettier": "^1.18.2",
+    "react": "^16.9.0",
+    "tslint": "^5.19.0",
+    "typescript": "^3.5.3",
+    "jest": "^24.9.0"
+  },
+  "dependencies": {
+    "@babel/preset-react": "^7.0.0",
+    "puppeteer": "^1.19.0",
+    "puppeteer-core": "^1.19.0",
+    "react-dom": "^16.9.0"
+  },
+  "peerDependencies": {
+    "jest": "^24.9.0"
+  }
+}

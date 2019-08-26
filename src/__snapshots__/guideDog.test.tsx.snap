@@ -1,0 +1,49 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`guideDog 1`] = `
+Array [
+  Object {
+    "level": 1,
+    "name": "title",
+    "role": "heading",
+  },
+]
+`;
+
+exports[`guideDog 2 1`] = `
+Array [
+  Object {
+    "level": 2,
+    "name": "title",
+    "role": "heading",
+  },
+]
+`;
+
+exports[`guideDog comp with props 1`] = `
+Array [
+  Object {
+    "name": "props.text",
+    "role": "text",
+  },
+]
+`;
+
+exports[`guideDog landmarks 1`] = `
+Array [
+  Object {
+    "name": "title",
+    "role": "text",
+  },
+  Object {
+    "level": 1,
+    "name": "title 1",
+    "role": "heading",
+  },
+  Object {
+    "level": 1,
+    "name": "title 2",
+    "role": "heading",
+  },
+]
+`;
