@@ -1,6 +1,6 @@
 {
   "name": "@rubennic/guidedog",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "main": "./dist/index",
   "repository": "https://github.com/RubenSandwich/guidedog",
   "author": "Ruben Niculcea <ruben.niculcea@gmail.com>",
@@ -32,7 +32,4 @@
     "puppeteer-core": "^1.19.0",
     "react-dom": "^16.9.0"
   },
-  "peerDependencies": {
-    "jest": "^24.9.0"
-  }
 }
