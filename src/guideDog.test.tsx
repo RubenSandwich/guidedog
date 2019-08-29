@@ -4,11 +4,11 @@ import { guideDog } from './guideDog';
 import * as React from 'react';
 
 const TestComp = () => {
-  return <h1>title</h1>;
+  return <h1>header 1</h1>;
 };
 
 const TestComp2 = () => {
-  return <h2>title</h2>;
+  return <h2>header 1, level 2</h2>;
 };
 
 const TestCompWithProps = (props: {text: string}) => {
@@ -17,11 +17,26 @@ const TestCompWithProps = (props: {text: string}) => {
 
 const TestCompLandmarks = () => {
   return (
-    <body>
-      <header><div>title</div></header>
-      <main><h1>title 1</h1></main>
-      <footer><h1>title 2</h1></footer>
-    </body>
+    <>
+      <header><div>raw text</div></header>
+      <main><h1>header 1</h1></main>
+      <footer><h1>header 2</h1></footer>
+    </>
+  );
+};
+
+const TestCompTabable = () => {
+  return (
+    <>
+      <header><div>raw text</div></header>
+      <main><h1>header 1</h1></main>
+      <footer><a href='test'>Link 1</a></footer>
+      <a href='test'>Link 2</a>
+      <>
+        <label htmlFor='name'>Your Name:</label>
+        <input name='name' type='text' />
+      </>
+    </>
   );
 };
 
@@ -43,9 +58,21 @@ test('guideDog comp with props', async () => {
   expect(accessibilityTree).toMatchSnapshot();
 });
 
-test('guideDog landmarks', async () => {
-  // puppeteer doesn't have great aria landmark support...
-  const accessibilityTree = await guideDog(<TestCompLandmarks />);
+// test('guideDog landmarks', async () => {
+//   // puppeteer doesn't report aria landmarks...
+//   const accessibilityTree = await guideDog(<TestCompLandmarks />);
 
+//   expect(accessibilityTree).toMatchSnapshot();
+// });
+
+test('guideDog tabable elements', async () => {
+  const accessibilityTree = await guideDog(<TestCompTabable />);
   expect(accessibilityTree).toMatchSnapshot();
+
+  const tabableTree = await guideDog(<TestCompTabable />, {
+    onlyTabableElements: true,
+  });
+
+  expect(tabableTree).toMatchSnapshot();
+  expect(tabableTree).not.toBe(accessibilityTree);
 });

@@ -3,8 +3,9 @@
 exports[`guideDog 1`] = `
 Array [
   Object {
+    "html": "<h1 data-reactroot=\\"\\">header 1</h1>",
     "level": 1,
-    "name": "title",
+    "name": "header 1",
     "role": "heading",
   },
 ]
@@ -13,8 +14,9 @@ Array [
 exports[`guideDog 2 1`] = `
 Array [
   Object {
+    "html": "<h2 data-reactroot=\\"\\">header 1, level 2</h2>",
     "level": 2,
-    "name": "title",
+    "name": "header 1, level 2",
     "role": "heading",
   },
 ]
@@ -23,27 +25,65 @@ Array [
 exports[`guideDog comp with props 1`] = `
 Array [
   Object {
+    "html": "props.text",
     "name": "props.text",
     "role": "text",
   },
 ]
 `;
 
-exports[`guideDog landmarks 1`] = `
+exports[`guideDog tabable elements 1`] = `
 Array [
   Object {
-    "name": "title",
+    "html": "raw text",
+    "name": "raw text",
     "role": "text",
   },
   Object {
+    "html": "<h1>header 1</h1>",
     "level": 1,
-    "name": "title 1",
+    "name": "header 1",
     "role": "heading",
   },
   Object {
-    "level": 1,
-    "name": "title 2",
-    "role": "heading",
+    "html": "<a href=\\"test\\">Link 1</a>",
+    "name": "Link 1",
+    "role": "link",
+  },
+  Object {
+    "html": "<a href=\\"test\\">Link 2</a>",
+    "name": "Link 2",
+    "role": "link",
+  },
+  Object {
+    "html": "Your Name:",
+    "name": "Your Name:",
+    "role": "text",
+  },
+  Object {
+    "html": "<input type=\\"text\\" name=\\"name\\">",
+    "name": "",
+    "role": "textbox",
+  },
+]
+`;
+
+exports[`guideDog tabable elements 2`] = `
+Array [
+  Object {
+    "html": "<a href=\\"test\\">Link 1</a>",
+    "name": "Link 1",
+    "role": "link",
+  },
+  Object {
+    "html": "<a href=\\"test\\">Link 2</a>",
+    "name": "Link 2",
+    "role": "link",
+  },
+  Object {
+    "html": "<input type=\\"text\\" name=\\"name\\">",
+    "name": "",
+    "role": "textbox",
   },
 ]
 `;

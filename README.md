@@ -4,11 +4,15 @@
 ## Here be dragons. 
 ##### Beware of Dog. 
 
-Guide Dog is an experiment in regression testing for accessability. 
+Guide Dog is an experiment in regression testing for accessability.
 
-It currently only produces accessability trees for React components, which can then be "snapshotted" with jest to tell when  element changes produce accessability changes.
+It currently only works with React components, which can then be "snapshotted" with jest to tell when  element changes produce accessability changes.
 
-## Use:
+Guide Dog can produce:
+- accessability tree
+- tabable elements tree
+
+## Usage:
 ```bash
 yarn add --dev @rubennic/guidedog
 ```
@@ -19,14 +23,18 @@ import { guideDog } from '@rubennic/guidedog';
 
 test('guideDog test', async () => {
   const accessibilityTree = await guideDog(<TestComp/>);
-
   expect(accessibilityTree).toMatchSnapshot();
+
+  const tabableTree = await guideDog(<TestComp/>, {
+    onlyTabableElements: true,
+  });
+  expect(tabableTree).toMatchSnapshot();
 });
 ```
 
 ## A few of it's current limitations:
 
-1. Poor ARIA Landmark support.
+1. No ARIA Landmark support.
 2. Super slow. This is due to using puppeteer to generate accessability trees.
 3. Invalid snapshots do not link back to offending react components.
 

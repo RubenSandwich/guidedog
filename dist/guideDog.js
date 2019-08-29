@@ -38,29 +38,40 @@ var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
 var puppeteer_1 = require("puppeteer");
 var ReactDOMServer = require("react-dom/server");
-exports.guideDog = function (reactComp) { return __awaiter(_this, void 0, void 0, function () {
-    var comp, browser, page, tree;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                comp = ReactDOMServer.renderToString(reactComp);
-                return [4, puppeteer_1.launch()];
-            case 1:
-                browser = _a.sent();
-                return [4, browser.newPage()];
-            case 2:
-                page = _a.sent();
-                return [4, page.setContent(comp)];
-            case 3:
-                _a.sent();
-                return [4, page.accessibility.snapshot()];
-            case 4:
-                tree = _a.sent();
-                return [4, browser.close()];
-            case 5:
-                _a.sent();
-                return [2, tree.children];
-        }
+exports.guideDog = function (reactComp, options) {
+    if (options === void 0) { options = {
+        onlyTabableElements: false,
+    }; }
+    return __awaiter(_this, void 0, void 0, function () {
+        var comp, browser, page, snapshotOptions, tree;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    comp = ReactDOMServer.renderToString(reactComp);
+                    return [4, puppeteer_1.launch()];
+                case 1:
+                    browser = _a.sent();
+                    return [4, browser.newPage()];
+                case 2:
+                    page = _a.sent();
+                    return [4, page.setContent(comp)];
+                case 3:
+                    _a.sent();
+                    snapshotOptions = {
+                        focusableOnly: false,
+                    };
+                    if (options.onlyTabableElements) {
+                        snapshotOptions.focusableOnly = true;
+                    }
+                    return [4, page.accessibility.snapshot(snapshotOptions)];
+                case 4:
+                    tree = _a.sent();
+                    return [4, browser.close()];
+                case 5:
+                    _a.sent();
+                    return [2, tree.children];
+            }
+        });
     });
-}); };
+};
 //# sourceMappingURL=guideDog.js.map

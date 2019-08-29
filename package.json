@@ -1,6 +1,6 @@
 {
   "name": "@rubennic/guidedog",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "main": "./dist/index",
   "repository": "https://github.com/RubenSandwich/guidedog",
   "author": "Ruben Niculcea <ruben.niculcea@gmail.com>",
@@ -20,16 +20,15 @@
     "@types/puppeteer": "^1.19.1",
     "@types/react-dom": "^16.9.0",
     "babel-jest": "^24.9.0",
+    "jest": "^24.9.0",
     "prettier": "^1.18.2",
     "react": "^16.9.0",
     "tslint": "^5.19.0",
     "typescript": "^3.5.3",
-    "jest": "^24.9.0"
+    "@babel/preset-react": "^7.0.0"
   },
   "dependencies": {
-    "@babel/preset-react": "^7.0.0",
-    "puppeteer": "^1.19.0",
-    "puppeteer-core": "^1.19.0",
+    "puppeteer": "https://github.com/RubenSandwich/puppeteer",
     "react-dom": "^16.9.0"
   }
 }
