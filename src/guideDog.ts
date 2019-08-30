@@ -5,13 +5,37 @@ import * as ReactDOMServer from 'react-dom/server';
 import { ReactElement } from 'react';
 
 interface IGuideDogOptions {
-  onlyTabableElements: boolean;
+  filterType: GuideDogFilter;
 }
+
+export enum GuideDogFilter {
+  None,
+  OnlyInteresting,
+  OnlyLandmarks,
+  OnlyTabableElements,
+}
+
+const guideDogFilterToPuppeteerFilter = (gdFilter: GuideDogFilter): string => {
+  switch (gdFilter) {
+    case GuideDogFilter.None: {
+      return 'none';
+    }
+    case GuideDogFilter.OnlyInteresting: {
+      return 'interestingOnly';
+    }
+    case GuideDogFilter.OnlyLandmarks: {
+      return 'landmarkOnly';
+    }
+    case GuideDogFilter.OnlyTabableElements: {
+      return 'focusableOnly';
+    }
+  }
+};
 
 export const guideDog = async (
   reactComp: ReactElement,
   options: IGuideDogOptions = {
-    onlyTabableElements: false,
+    filterType: GuideDogFilter.OnlyInteresting,
   },
 ): Promise<AXNode[]> => {
   const comp = ReactDOMServer.renderToString(reactComp);
@@ -23,11 +47,8 @@ export const guideDog = async (
   await page.setContent(comp);
 
   const snapshotOptions = {
-    focusableOnly: false,
+    filterType: guideDogFilterToPuppeteerFilter(options.filterType),
   };
-  if (options.onlyTabableElements) {
-    snapshotOptions.focusableOnly = true;
-  }
 
   // @ts-ignore: Using a forked version of puppeteer with custom options
   const tree: AXNode = await page.accessibility.snapshot(snapshotOptions);

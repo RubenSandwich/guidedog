@@ -3052,9 +3052,9 @@ punycode@^2.1.0, punycode@^2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-2.1.1.tgz#b58b010ac40c22c5657616c8d2c2c02c7bf479ec"
 
-"puppeteer@https://github.com/RubenSandwich/puppeteer":
+"puppeteer@https://github.com/RubenSandwich/puppeteer#master":
   version "1.19.0-post"
-  resolved "https://github.com/RubenSandwich/puppeteer#056a769c9c7874bab36bd34f9cf27b3752675a48"
+  resolved "https://github.com/RubenSandwich/puppeteer#0797885ea3a41269540b17f049f71a84a57866e1"
   dependencies:
     debug "^4.1.0"
     extract-zip "^1.6.6"

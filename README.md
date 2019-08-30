@@ -9,8 +9,9 @@ Guide Dog is an experiment in regression testing for accessability.
 It currently only works with React components, which can then be "snapshotted" with jest to tell when  element changes produce accessability changes.
 
 Guide Dog can produce:
-- accessability tree
-- tabable elements tree
+- Accessability tree
+- Tabable elements tree
+- Landmarks tree
 
 ## Usage:
 ```bash
@@ -19,23 +20,27 @@ yarn add --dev @rubennic/guidedog
 
 In your jest file:
 ```jsx
-import { guideDog } from '@rubennic/guidedog';
+import { guideDog, GuideDogFilter } from '@rubennic/guidedog';
 
 test('guideDog test', async () => {
   const accessibilityTree = await guideDog(<TestComp/>);
   expect(accessibilityTree).toMatchSnapshot();
 
   const tabableTree = await guideDog(<TestComp/>, {
-    onlyTabableElements: true,
+    filterType: GuideDogFilter.OnlyTabableElements,
   });
   expect(tabableTree).toMatchSnapshot();
+
+  const landmarksTree = await guideDog(<TestComp/>, {
+    filterType: GuideDogFilter.OnlyLandmarks,
+  });
+  expect(landmarksTree).toMatchSnapshot();
 });
 ```
 
 ## A few of it's current limitations:
 
-1. No ARIA Landmark support.
-2. Super slow. This is due to using puppeteer to generate accessability trees.
-3. Invalid snapshots do not link back to offending react components.
+1. Super slow. This is due to using puppeteer to generate accessability trees.
+2. Invalid snapshots do not link back to offending react components.
 
 I'm working on ideas for all of the above problems.

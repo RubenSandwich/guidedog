@@ -1,5 +1,5 @@
 
-import { guideDog } from './guideDog';
+import { guideDog, GuideDogFilter } from './guideDog';
 
 import * as React from 'react';
 
@@ -58,19 +58,21 @@ test('guideDog comp with props', async () => {
   expect(accessibilityTree).toMatchSnapshot();
 });
 
-// test('guideDog landmarks', async () => {
-//   // puppeteer doesn't report aria landmarks...
-//   const accessibilityTree = await guideDog(<TestCompLandmarks />);
+test('guideDog landmarks', async () => {
+  const accessibilityTree = await guideDog(<TestCompLandmarks />, {
+    filterType: GuideDogFilter.OnlyLandmarks,
+  });
 
-//   expect(accessibilityTree).toMatchSnapshot();
-// });
+  expect(accessibilityTree).toMatchSnapshot();
+});
 
 test('guideDog tabable elements', async () => {
   const accessibilityTree = await guideDog(<TestCompTabable />);
+
   expect(accessibilityTree).toMatchSnapshot();
 
   const tabableTree = await guideDog(<TestCompTabable />, {
-    onlyTabableElements: true,
+    filterType: GuideDogFilter.OnlyTabableElements,
   });
 
   expect(tabableTree).toMatchSnapshot();

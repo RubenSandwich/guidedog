@@ -38,9 +38,32 @@ var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
 var puppeteer_1 = require("puppeteer");
 var ReactDOMServer = require("react-dom/server");
+var GuideDogFilter;
+(function (GuideDogFilter) {
+    GuideDogFilter[GuideDogFilter["None"] = 0] = "None";
+    GuideDogFilter[GuideDogFilter["OnlyInteresting"] = 1] = "OnlyInteresting";
+    GuideDogFilter[GuideDogFilter["OnlyLandmarks"] = 2] = "OnlyLandmarks";
+    GuideDogFilter[GuideDogFilter["OnlyTabableElements"] = 3] = "OnlyTabableElements";
+})(GuideDogFilter = exports.GuideDogFilter || (exports.GuideDogFilter = {}));
+var guideDogFilterToPuppeteerFilter = function (gdFilter) {
+    switch (gdFilter) {
+        case GuideDogFilter.None: {
+            return 'none';
+        }
+        case GuideDogFilter.OnlyInteresting: {
+            return 'interestingOnly';
+        }
+        case GuideDogFilter.OnlyLandmarks: {
+            return 'landmarkOnly';
+        }
+        case GuideDogFilter.OnlyTabableElements: {
+            return 'focusableOnly';
+        }
+    }
+};
 exports.guideDog = function (reactComp, options) {
     if (options === void 0) { options = {
-        onlyTabableElements: false,
+        filterType: GuideDogFilter.OnlyInteresting,
     }; }
     return __awaiter(_this, void 0, void 0, function () {
         var comp, browser, page, snapshotOptions, tree;
@@ -58,11 +81,8 @@ exports.guideDog = function (reactComp, options) {
                 case 3:
                     _a.sent();
                     snapshotOptions = {
-                        focusableOnly: false,
+                        filterType: guideDogFilterToPuppeteerFilter(options.filterType),
                     };
-                    if (options.onlyTabableElements) {
-                        snapshotOptions.focusableOnly = true;
-                    }
                     return [4, page.accessibility.snapshot(snapshotOptions)];
                 case 4:
                     tree = _a.sent();

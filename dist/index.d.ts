@@ -1,2 +1,2 @@
-import { guideDog } from './guideDog';
-export { guideDog };
+import { guideDog, GuideDogFilter } from './guideDog';
+export { guideDog, GuideDogFilter };

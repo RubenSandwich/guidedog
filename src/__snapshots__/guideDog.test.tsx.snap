@@ -32,6 +32,26 @@ Array [
 ]
 `;
 
+exports[`guideDog landmarks 1`] = `
+Array [
+  Object {
+    "html": "<header><div>raw text</div></header>",
+    "name": "",
+    "role": "banner",
+  },
+  Object {
+    "html": "<main><h1>header 1</h1></main>",
+    "name": "",
+    "role": "main",
+  },
+  Object {
+    "html": "<footer><h1>header 2</h1></footer>",
+    "name": "",
+    "role": "contentinfo",
+  },
+]
+`;
+
 exports[`guideDog tabable elements 1`] = `
 Array [
   Object {
