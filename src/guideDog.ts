@@ -1,8 +1,7 @@
-
 // @ts-ignore 1192 - No default export
-import puppeteer, { AXNode, Browser, Page } from 'puppeteer';
-import * as ReactDOMServer from 'react-dom/server';
-import { ReactElement } from 'react';
+import puppeteer, { AXNode, Browser, Page } from "puppeteer";
+import * as ReactDOMServer from "react-dom/server";
+import { ReactElement } from "react";
 
 interface IGuideDogOptions {
   filterType: GuideDogFilter;
@@ -12,42 +11,47 @@ export enum GuideDogFilter {
   None,
   OnlyInteresting,
   OnlyLandmarks,
-  OnlyTabableElements,
+  OnlyTabableElements
 }
 
 const guideDogFilterToPuppeteerFilter = (gdFilter: GuideDogFilter): string => {
   switch (gdFilter) {
     case GuideDogFilter.None: {
-      return 'none';
+      return "none";
     }
     case GuideDogFilter.OnlyInteresting: {
-      return 'interestingOnly';
+      return "interestingOnly";
     }
     case GuideDogFilter.OnlyLandmarks: {
-      return 'landmarkOnly';
+      return "landmarkOnly";
     }
     case GuideDogFilter.OnlyTabableElements: {
-      return 'focusableOnly';
+      return "focusableOnly";
     }
   }
 };
 
 export const guideDog = async (
-  reactComp: ReactElement,
+  input: ReactElement | string,
   options: IGuideDogOptions = {
-    filterType: GuideDogFilter.OnlyInteresting,
-  },
+    filterType: GuideDogFilter.OnlyInteresting
+  }
 ): Promise<AXNode[]> => {
-  const comp = ReactDOMServer.renderToString(reactComp);
+  let html;
+  if (typeof input === "string") {
+    html = input;
+  } else {
+    html = ReactDOMServer.renderToString(input);
+  }
 
   // This is terribly slow and should be reused between tests...
   const browser: Browser = await puppeteer.launch();
   const page: Page = await browser.newPage();
 
-  await page.setContent(comp);
+  await page.setContent(html);
 
   const snapshotOptions = {
-    filterType: guideDogFilterToPuppeteerFilter(options.filterType),
+    filterType: guideDogFilterToPuppeteerFilter(options.filterType)
   };
 
   // @ts-ignore: Using a forked version of puppeteer with custom options

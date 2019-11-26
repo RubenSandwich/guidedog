@@ -48,40 +48,45 @@ var GuideDogFilter;
 var guideDogFilterToPuppeteerFilter = function (gdFilter) {
     switch (gdFilter) {
         case GuideDogFilter.None: {
-            return 'none';
+            return "none";
         }
         case GuideDogFilter.OnlyInteresting: {
-            return 'interestingOnly';
+            return "interestingOnly";
         }
         case GuideDogFilter.OnlyLandmarks: {
-            return 'landmarkOnly';
+            return "landmarkOnly";
         }
         case GuideDogFilter.OnlyTabableElements: {
-            return 'focusableOnly';
+            return "focusableOnly";
         }
     }
 };
-exports.guideDog = function (reactComp, options) {
+exports.guideDog = function (input, options) {
     if (options === void 0) { options = {
-        filterType: GuideDogFilter.OnlyInteresting,
+        filterType: GuideDogFilter.OnlyInteresting
     }; }
     return __awaiter(_this, void 0, void 0, function () {
-        var comp, browser, page, snapshotOptions, tree;
+        var html, browser, page, snapshotOptions, tree;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    comp = ReactDOMServer.renderToString(reactComp);
+                    if (typeof input === "string") {
+                        html = input;
+                    }
+                    else {
+                        html = ReactDOMServer.renderToString(input);
+                    }
                     return [4, puppeteer_1.launch()];
                 case 1:
                     browser = _a.sent();
                     return [4, browser.newPage()];
                 case 2:
                     page = _a.sent();
-                    return [4, page.setContent(comp)];
+                    return [4, page.setContent(html)];
                 case 3:
                     _a.sent();
                     snapshotOptions = {
-                        filterType: guideDogFilterToPuppeteerFilter(options.filterType),
+                        filterType: guideDogFilterToPuppeteerFilter(options.filterType)
                     };
                     return [4, page.accessibility.snapshot(snapshotOptions)];
                 case 4:

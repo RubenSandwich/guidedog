@@ -1,5 +1,5 @@
-import { AXNode } from 'puppeteer';
-import { ReactElement } from 'react';
+import { AXNode } from "puppeteer";
+import { ReactElement } from "react";
 interface IGuideDogOptions {
     filterType: GuideDogFilter;
 }
@@ -9,5 +9,5 @@ export declare enum GuideDogFilter {
     OnlyLandmarks = 2,
     OnlyTabableElements = 3
 }
-export declare const guideDog: (reactComp: ReactElement<any, string | ((props: any) => ReactElement<any, string | any | (new (props: any) => import("react").Component<any, any, any>)>) | (new (props: any) => import("react").Component<any, any, any>)>, options?: IGuideDogOptions) => Promise<AXNode[]>;
+export declare const guideDog: (input: string | ReactElement<any, string | ((props: any) => ReactElement<any, string | any | (new (props: any) => import("react").Component<any, any, any>)>) | (new (props: any) => import("react").Component<any, any, any>)>, options?: IGuideDogOptions) => Promise<AXNode[]>;
 export {};

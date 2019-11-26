@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`guideDog 1`] = `
+exports[`guideDog basic react comp 1`] = `
 Array [
   Object {
     "html": "<h1 data-reactroot=\\"\\">header 1</h1>",
@@ -11,7 +11,7 @@ Array [
 ]
 `;
 
-exports[`guideDog 2 1`] = `
+exports[`guideDog basic react comp 2 1`] = `
 Array [
   Object {
     "html": "<h2 data-reactroot=\\"\\">header 1, level 2</h2>",
@@ -48,6 +48,39 @@ Array [
     "html": "<footer><h1>header 2</h1></footer>",
     "name": "",
     "role": "contentinfo",
+  },
+]
+`;
+
+exports[`guideDog string 1`] = `
+Array [
+  Object {
+    "html": "<h1>header 1</h1>",
+    "level": 1,
+    "name": "header 1",
+    "role": "heading",
+  },
+]
+`;
+
+exports[`guideDog string 2 1`] = `
+Array [
+  Object {
+    "html": "raw text",
+    "name": "raw text",
+    "role": "text",
+  },
+  Object {
+    "html": "<h1>header 1</h1>",
+    "level": 1,
+    "name": "header 1",
+    "role": "heading",
+  },
+  Object {
+    "html": "<h1>header 2</h1>",
+    "level": 1,
+    "name": "header 2",
+    "role": "heading",
   },
 ]
 `;
