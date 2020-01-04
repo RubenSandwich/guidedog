@@ -1,12 +1,21 @@
 interface IGuideDogOptions {
-    filterType: GuideDogFilter;
+    filterType?: GuideDogFilter;
+    sourceCodeLoc?: boolean;
 }
 export declare enum GuideDogFilter {
     Headers = 0
 }
-export declare const guideDog: (html: string, options?: IGuideDogOptions) => AccessibleNode[];
-export declare const getHeaderInsertIndex: (accessibleNodes: AccessibleNode[], insertHeaderLevel: number) => number[];
-export declare const upsertNode: (accessibleNodes: AccessibleNode[], node: AccessibleNode, indexPath: number[]) => AccessibleNode[];
+declare type AccessibleNodeWithSource = AccessibleNode & {
+    sourceCodeLoc: Location;
+};
+declare type AccessibleNodes = AccessibleNode[] | AccessibleNodeWithSource[];
+export declare const guideDog: (html: string, options?: IGuideDogOptions) => AccessibleNodes;
+export declare const getHeaderInsertIndex: (accessibleNodes: AccessibleNodes, insertHeaderLevel: number) => number[];
+export declare const upsertNode: (accessibleNodes: AccessibleNodes, node: AccessibleNode, indexPath: number[]) => AccessibleNodes;
+interface SourceLocation {
+    startOffset: number;
+    endOffset: number;
+}
 interface AccessibleNode {
     role: string;
     name: string;
@@ -18,5 +27,6 @@ interface AccessibleNode {
     lastChild?: AccessibleNode;
     previousSibling?: AccessibleNode;
     nextSibling?: AccessibleNode;
+    sourceCodeLoc?: SourceLocation;
 }
 export {};

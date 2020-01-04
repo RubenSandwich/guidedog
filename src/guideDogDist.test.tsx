@@ -91,3 +91,22 @@ test('guideDog nested h1, h2, and h3s', () => {
     },
   ]);
 });
+
+test('guideDog single h1 w/ source loc', () => {
+  const accessibilityTree = guideDog('<h1>header 1</h1>', {
+    sourceCodeLoc: true,
+  });
+
+  expect(accessibilityTree).toEqual([
+    {
+      role: 'heading',
+      name: 'header 1',
+      level: 1,
+      focusable: false,
+      sourceCodeLoc: {
+        startOffset: 0,
+        endOffset: 17,
+      },
+    },
+  ]);
+});

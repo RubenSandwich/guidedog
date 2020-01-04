@@ -1,26 +1,40 @@
 import { parseFragment, DefaultTreeElement, DefaultTreeTextNode } from 'parse5';
 
 interface IGuideDogOptions {
-  filterType: GuideDogFilter;
+  filterType?: GuideDogFilter;
+  sourceCodeLoc?: boolean;
 }
 
 export enum GuideDogFilter {
   Headers,
 }
 
+type AccessibleNodeWithSource = AccessibleNode & { sourceCodeLoc: Location };
+type AccessibleNodes = AccessibleNode[] | AccessibleNodeWithSource[];
+
 export const guideDog = (
   html: string,
-  options: IGuideDogOptions = {
+  options?: IGuideDogOptions,
+): AccessibleNodes => {
+  const defaults: IGuideDogOptions = {
     filterType: GuideDogFilter.Headers,
-  },
-): AccessibleNode[] => {
+    sourceCodeLoc: false,
+  };
+
+  const optionsWithDefaults = { ...defaults, ...options };
+
   const document = parseFragment(html, {
-    // sourceCodeLocationInfo: true
+    sourceCodeLocationInfo: optionsWithDefaults.sourceCodeLoc,
   }) as DefaultTreeElement;
 
-  return parseIntoAccessibleNodes(document, options.filterType);
+  const tree = parseIntoAccessibleNodes(document, optionsWithDefaults);
 
-  // return tree;
+  return tree;
+
+  // TODO: How do I get the type limited here?
+  // return optionsWithDefaults.sourceCodeLoc
+  //   ? (tree as AccessibleNodeWithSource[])
+  //   : (tree as AccessibleNode[]);
 };
 
 const getFirstChild = (node: DefaultTreeElement) => {
@@ -29,9 +43,11 @@ const getFirstChild = (node: DefaultTreeElement) => {
 
 const parseIntoAccessibleNodes = (
   node: DefaultTreeElement,
-  filterType: GuideDogFilter,
-  accessibleNodes: AccessibleNode[] = [],
+  options: IGuideDogOptions,
+  accessibleNodes: AccessibleNodes = [],
 ) => {
+  const { filterType, sourceCodeLoc } = options;
+
   if (!node.childNodes) {
     return accessibleNodes;
   }
@@ -41,12 +57,19 @@ const parseIntoAccessibleNodes = (
     const textNode = getFirstChild(node) as DefaultTreeTextNode;
     const insertIndex = getHeaderInsertIndex(accessibleNodes, level);
 
-    const newNode = {
+    const newNode: AccessibleNode = {
       role: 'heading',
       name: textNode.value,
       level,
       focusable: false,
     };
+
+    if (sourceCodeLoc) {
+      newNode.sourceCodeLoc = {
+        startOffset: node.sourceCodeLocation.startOffset,
+        endOffset: node.sourceCodeLocation.endOffset,
+      };
+    }
 
     return upsertNode(accessibleNodes, newNode, insertIndex);
   }
@@ -56,7 +79,7 @@ const parseIntoAccessibleNodes = (
   node.childNodes.forEach(childNode => {
     newAccessibleNodes = parseIntoAccessibleNodes(
       childNode as DefaultTreeElement,
-      filterType,
+      options,
       newAccessibleNodes,
     );
   });
@@ -73,7 +96,7 @@ const getHeadingLevel = (nodeTagName: string): number => {
 };
 
 export const getHeaderInsertIndex = (
-  accessibleNodes: AccessibleNode[],
+  accessibleNodes: AccessibleNodes,
   insertHeaderLevel: number,
 ): number[] => {
   if (accessibleNodes.length === 0) {
@@ -96,10 +119,10 @@ export const getHeaderInsertIndex = (
 };
 
 export const upsertNode = (
-  accessibleNodes: AccessibleNode[],
+  accessibleNodes: AccessibleNodes,
   node: AccessibleNode,
   indexPath: number[],
-): AccessibleNode[] => {
+): AccessibleNodes => {
   if (accessibleNodes.length == 0) {
     return [node];
   }
@@ -130,6 +153,11 @@ export const upsertNode = (
   ];
 };
 
+interface SourceLocation {
+  startOffset: number;
+  endOffset: number;
+}
+
 interface AccessibleNode {
   role: string;
   name: string;
@@ -147,4 +175,6 @@ interface AccessibleNode {
   lastChild?: AccessibleNode;
   previousSibling?: AccessibleNode;
   nextSibling?: AccessibleNode;
+
+  sourceCodeLoc?: SourceLocation;
 }

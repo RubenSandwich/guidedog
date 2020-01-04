@@ -24,17 +24,23 @@ var GuideDogFilter;
     GuideDogFilter[GuideDogFilter["Headers"] = 0] = "Headers";
 })(GuideDogFilter = exports.GuideDogFilter || (exports.GuideDogFilter = {}));
 exports.guideDog = function (html, options) {
-    if (options === void 0) { options = {
+    var defaults = {
         filterType: GuideDogFilter.Headers,
-    }; }
-    var document = parse5_1.parseFragment(html, {});
-    return parseIntoAccessibleNodes(document, options.filterType);
+        sourceCodeLoc: false,
+    };
+    var optionsWithDefaults = __assign(__assign({}, defaults), options);
+    var document = parse5_1.parseFragment(html, {
+        sourceCodeLocationInfo: optionsWithDefaults.sourceCodeLoc,
+    });
+    var tree = parseIntoAccessibleNodes(document, optionsWithDefaults);
+    return tree;
 };
 var getFirstChild = function (node) {
     return node.childNodes[0];
 };
-var parseIntoAccessibleNodes = function (node, filterType, accessibleNodes) {
+var parseIntoAccessibleNodes = function (node, options, accessibleNodes) {
     if (accessibleNodes === void 0) { accessibleNodes = []; }
+    var filterType = options.filterType, sourceCodeLoc = options.sourceCodeLoc;
     if (!node.childNodes) {
         return accessibleNodes;
     }
@@ -48,11 +54,17 @@ var parseIntoAccessibleNodes = function (node, filterType, accessibleNodes) {
             level: level,
             focusable: false,
         };
+        if (sourceCodeLoc) {
+            newNode.sourceCodeLoc = {
+                startOffset: node.sourceCodeLocation.startOffset,
+                endOffset: node.sourceCodeLocation.endOffset,
+            };
+        }
         return exports.upsertNode(accessibleNodes, newNode, insertIndex);
     }
     var newAccessibleNodes = accessibleNodes;
     node.childNodes.forEach(function (childNode) {
-        newAccessibleNodes = parseIntoAccessibleNodes(childNode, filterType, newAccessibleNodes);
+        newAccessibleNodes = parseIntoAccessibleNodes(childNode, options, newAccessibleNodes);
     });
     return newAccessibleNodes;
 };
