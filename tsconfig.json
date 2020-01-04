@@ -4,7 +4,6 @@
     "target": "es5",
     "module": "commonjs",
     "outDir": "./dist",
-    "jsx": "react",
     "noImplicitAny": true,
     "removeComments": true,
     "sourceMap": true,
