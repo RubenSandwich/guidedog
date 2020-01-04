@@ -10,7 +10,7 @@ export enum GuideDogFilter {
 }
 
 type AccessibleNodeWithSource = AccessibleNode & { sourceCodeLoc: Location };
-type AccessibleNodes = AccessibleNode[] | AccessibleNodeWithSource[];
+export type AccessibleNodes = AccessibleNode[] | AccessibleNodeWithSource[];
 
 export const guideDog = (
   html: string,

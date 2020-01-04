@@ -8,7 +8,7 @@ export declare enum GuideDogFilter {
 declare type AccessibleNodeWithSource = AccessibleNode & {
     sourceCodeLoc: Location;
 };
-declare type AccessibleNodes = AccessibleNode[] | AccessibleNodeWithSource[];
+export declare type AccessibleNodes = AccessibleNode[] | AccessibleNodeWithSource[];
 export declare const guideDog: (html: string, options?: IGuideDogOptions) => AccessibleNodes;
 export declare const getHeaderInsertIndex: (accessibleNodes: AccessibleNodes, insertHeaderLevel: number) => number[];
 export declare const upsertNode: (accessibleNodes: AccessibleNodes, node: AccessibleNode, indexPath: number[]) => AccessibleNodes;
