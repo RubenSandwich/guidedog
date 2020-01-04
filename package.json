@@ -7,9 +7,9 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "build": "yarn run removeBuild && tsc --build",
+    "build": "yarn removeBuild && tsc --build",
     "removeBuild": "rm -rf ./dist && mkdir ./dist",
-    "test": "jest",
+    "test": "yarn build && jest",
     "lint": "tslint \"src/**/*.ts\""
   },
   "devDependencies": {

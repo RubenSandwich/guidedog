@@ -19,7 +19,6 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var parse5_1 = require("parse5");
-var default_1 = require("parse5/lib/tree-adapters/default");
 var GuideDogFilter;
 (function (GuideDogFilter) {
     GuideDogFilter[GuideDogFilter["Headers"] = 0] = "Headers";
@@ -31,6 +30,9 @@ exports.guideDog = function (html, options) {
     var document = parse5_1.parseFragment(html, {});
     return parseIntoAccessibleNodes(document, options.filterType);
 };
+var getFirstChild = function (node) {
+    return node.childNodes[0];
+};
 var parseIntoAccessibleNodes = function (node, filterType, accessibleNodes) {
     if (accessibleNodes === void 0) { accessibleNodes = []; }
     if (!node.childNodes) {
@@ -38,7 +40,7 @@ var parseIntoAccessibleNodes = function (node, filterType, accessibleNodes) {
     }
     if (isHeading(node.tagName)) {
         var level = getHeadingLevel(node.tagName);
-        var textNode = default_1.getFirstChild(node);
+        var textNode = getFirstChild(node);
         var insertIndex = exports.getHeaderInsertIndex(accessibleNodes, level);
         var newNode = {
             role: 'heading',

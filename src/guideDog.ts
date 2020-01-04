@@ -1,7 +1,4 @@
-import { parseFragment, DefaultTreeElement } from 'parse5';
-
-// @ts-ignore: We will provide types latter
-import { getFirstChild } from 'parse5/lib/tree-adapters/default';
+import { parseFragment, DefaultTreeElement, DefaultTreeTextNode } from 'parse5';
 
 interface IGuideDogOptions {
   filterType: GuideDogFilter;
@@ -26,6 +23,10 @@ export const guideDog = (
   // return tree;
 };
 
+const getFirstChild = (node: DefaultTreeElement) => {
+  return node.childNodes[0];
+};
+
 const parseIntoAccessibleNodes = (
   node: DefaultTreeElement,
   filterType: GuideDogFilter,
@@ -37,7 +38,7 @@ const parseIntoAccessibleNodes = (
 
   if (isHeading(node.tagName)) {
     const level = getHeadingLevel(node.tagName);
-    const textNode = getFirstChild(node);
+    const textNode = getFirstChild(node) as DefaultTreeTextNode;
     const insertIndex = getHeaderInsertIndex(accessibleNodes, level);
 
     const newNode = {
