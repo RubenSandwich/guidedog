@@ -9,7 +9,34 @@ export enum GuideDogFilter {
   Headers,
 }
 
-type AccessibleNodeWithSource = AccessibleNode & { sourceCodeLoc: Location };
+interface SourceLocation {
+  startOffset: number;
+  endOffset: number;
+}
+
+export interface AccessibleNode {
+  role: string;
+  name: string;
+
+  // Only affects accessible focus
+  focusable: boolean;
+  level?: number;
+
+  // Tree walking
+  parent?: AccessibleNode;
+  children?: AccessibleNode[];
+
+  // Maybe?
+  firstChild?: AccessibleNode;
+  lastChild?: AccessibleNode;
+  previousSibling?: AccessibleNode;
+  nextSibling?: AccessibleNode;
+}
+
+export type AccessibleNodeWithSource = AccessibleNode & {
+  sourceCodeLoc: SourceLocation;
+};
+
 export type AccessibleNodes = AccessibleNode[] | AccessibleNodeWithSource[];
 
 export const guideDog = (
@@ -65,7 +92,7 @@ const parseIntoAccessibleNodes = (
     };
 
     if (sourceCodeLoc) {
-      newNode.sourceCodeLoc = {
+      (newNode as AccessibleNodeWithSource).sourceCodeLoc = {
         startOffset: node.sourceCodeLocation.startOffset,
         endOffset: node.sourceCodeLocation.endOffset,
       };
@@ -152,29 +179,3 @@ export const upsertNode = (
     ...accessibleNodes.slice(insertIndex + 1),
   ];
 };
-
-interface SourceLocation {
-  startOffset: number;
-  endOffset: number;
-}
-
-interface AccessibleNode {
-  role: string;
-  name: string;
-
-  // Only affects accessible focus
-  focusable: boolean;
-  level?: number;
-
-  // Tree walking
-  parent?: AccessibleNode;
-  children?: AccessibleNode[];
-
-  // Maybe?
-  firstChild?: AccessibleNode;
-  lastChild?: AccessibleNode;
-  previousSibling?: AccessibleNode;
-  nextSibling?: AccessibleNode;
-
-  sourceCodeLoc?: SourceLocation;
-}

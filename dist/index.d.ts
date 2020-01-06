@@ -1,2 +1,2 @@
-import { guideDog, GuideDogFilter, AccessibleNodes } from './guideDog';
-export { guideDog, GuideDogFilter, AccessibleNodes };
+import { guideDog, GuideDogFilter, AccessibleNode, AccessibleNodeWithSource } from './guideDog';
+export { guideDog, GuideDogFilter, AccessibleNode, AccessibleNodeWithSource };
