@@ -13,18 +13,31 @@
     "lint": "tslint \"src/**/*.ts\""
   },
   "devDependencies": {
-    "@babel/core": "^7.5.5",
-    "@babel/preset-env": "^7.5.5",
-    "@babel/preset-typescript": "^7.3.3",
-    "@types/jest": "^24.0.18",
+    "@babel/core": "^7.8.0",
+    "@babel/preset-env": "^7.8.0",
+    "@babel/preset-typescript": "^7.8.3",
+    "@types/jest": "^25.1.0",
     "@types/parse5": "^5.0.2",
-    "babel-jest": "^24.9.0",
-    "jest": "^24.9.0",
+    "babel-jest": "^25.1.0",
+    "jest": "^25.1.0",
     "prettier": "^1.18.2",
+    "ts-jest": "^25.2.1",
     "tslint": "^5.19.0",
-    "typescript": "^3.5.3"
+    "typescript": "^3.8.0"
   },
   "dependencies": {
     "parse5": "^5.1.1"
+  },
+  "jest": {
+    "roots": [
+      "<rootDir>/src"
+    ],
+    "testMatch": [
+      "**/__tests__/**/*.+(ts|tsx|js)",
+      "**/?(*.)+(spec|test).+(ts|tsx|js)"
+    ],
+    "transform": {
+      "^.+\\.(ts|tsx)$": "ts-jest"
+    }
   }
 }
