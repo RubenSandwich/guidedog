@@ -1,43 +1,24 @@
 import { parseFragment, DefaultTreeElement, DefaultTreeTextNode } from 'parse5';
 
-interface IGuideDogOptions {
-  filterType?: GuideDogFilter;
-  sourceCodeLoc?: boolean;
-}
+import {
+  filterTypeMap,
+  getFirstChild,
+  upsertNode,
+  isLink,
+  isHeading,
+  getHeaderInsertPath,
+  getHeadingLevel,
+  htmlAttributesToObject,
+  getNextTopLevelInsertPath,
+} from './utilities';
 
-export enum GuideDogFilter {
-  Headers,
-}
-
-interface SourceLocation {
-  startOffset: number;
-  endOffset: number;
-}
-
-export interface AccessibleNode {
-  role: string;
-  name: string;
-
-  // Only affects accessible focus
-  focusable: boolean;
-  level?: number;
-
-  // Tree walking
-  parent?: AccessibleNode;
-  children?: AccessibleNode[];
-
-  // Maybe?
-  firstChild?: AccessibleNode;
-  lastChild?: AccessibleNode;
-  previousSibling?: AccessibleNode;
-  nextSibling?: AccessibleNode;
-}
-
-export type AccessibleNodeWithSource = AccessibleNode & {
-  sourceCodeLoc: SourceLocation;
-};
-
-export type AccessibleNodes = AccessibleNode[] | AccessibleNodeWithSource[];
+import {
+  IGuideDogOptions,
+  AccessibleNode,
+  AccessibleNodes,
+  GuideDogFilter,
+  AccessibleNodeWithSource,
+} from './types';
 
 export const guideDog = (
   html: string,
@@ -64,10 +45,6 @@ export const guideDog = (
   //   : (tree as AccessibleNode[]);
 };
 
-const getFirstChild = (node: DefaultTreeElement) => {
-  return node.childNodes[0];
-};
-
 const parseIntoAccessibleNodes = (
   node: DefaultTreeElement,
   options: IGuideDogOptions,
@@ -79,26 +56,63 @@ const parseIntoAccessibleNodes = (
     return accessibleNodes;
   }
 
-  if (isHeading(node.tagName)) {
-    const level = getHeadingLevel(node.tagName);
-    const textNode = getFirstChild(node) as DefaultTreeTextNode;
-    const insertIndex = getHeaderInsertIndex(accessibleNodes, level);
+  const { newNode, insertPath } = filterTypeMap(filterType, {
+    [GuideDogFilter.Headers]: () => {
+      if (!isHeading(node.tagName)) {
+        return;
+      }
 
-    const newNode: AccessibleNode = {
-      role: 'heading',
-      name: textNode.value,
-      level,
-      focusable: false,
-    };
+      const level = getHeadingLevel(node.tagName);
+      const textNode = getFirstChild(node) as DefaultTreeTextNode;
+      const insertPath = getHeaderInsertPath(accessibleNodes, level);
 
-    if (sourceCodeLoc) {
-      (newNode as AccessibleNodeWithSource).sourceCodeLoc = {
-        startOffset: node.sourceCodeLocation.startOffset,
-        endOffset: node.sourceCodeLocation.endOffset,
+      const newNode: AccessibleNode = {
+        role: 'heading',
+        name: textNode.value,
+        level,
+        focusable: false,
       };
-    }
 
-    return upsertNode(accessibleNodes, newNode, insertIndex);
+      if (sourceCodeLoc) {
+        (newNode as AccessibleNodeWithSource).sourceCodeLoc = {
+          startOffset: node.sourceCodeLocation.startOffset,
+          endOffset: node.sourceCodeLocation.endOffset,
+        };
+      }
+
+      return { newNode, insertPath };
+    },
+    [GuideDogFilter.Links]: () => {
+      if (!isLink(node.tagName)) {
+        return;
+      }
+
+      if (htmlAttributesToObject(node.attrs)?.href == null) {
+        return;
+      }
+
+      const textNode = getFirstChild(node) as DefaultTreeTextNode;
+      const insertPath = getNextTopLevelInsertPath(accessibleNodes);
+
+      const newNode: AccessibleNode = {
+        role: 'link',
+        name: textNode.value,
+        focusable: true,
+      };
+
+      if (sourceCodeLoc) {
+        (newNode as AccessibleNodeWithSource).sourceCodeLoc = {
+          startOffset: node.sourceCodeLocation.startOffset,
+          endOffset: node.sourceCodeLocation.endOffset,
+        };
+      }
+
+      return { newNode, insertPath };
+    },
+  });
+
+  if (newNode) {
+    return upsertNode(accessibleNodes, newNode, insertPath);
   }
 
   let newAccessibleNodes = accessibleNodes;
@@ -112,75 +126,4 @@ const parseIntoAccessibleNodes = (
   });
 
   return newAccessibleNodes;
-};
-
-const isHeading = (nodeTagName: string): boolean => {
-  return /^h[1-6]/.test(nodeTagName);
-};
-
-const getHeadingLevel = (nodeTagName: string): number => {
-  return parseInt(nodeTagName.match(/[1-6]/)[0], 10);
-};
-
-const getHeaderInsertIndex = (
-  accessibleNodes: AccessibleNodes,
-  insertHeaderLevel: number,
-): number[] => {
-  if (accessibleNodes.length === 0) {
-    return [0];
-  }
-
-  const lastNodeIndex = accessibleNodes.length - 1;
-  const lastNode = accessibleNodes[accessibleNodes.length - 1];
-
-  if (lastNode.level >= insertHeaderLevel) {
-    return [lastNodeIndex + 1];
-  } else if (lastNode.children == null) {
-    return [lastNodeIndex, 0];
-  }
-
-  return [
-    lastNodeIndex,
-    ...getHeaderInsertIndex(lastNode.children, insertHeaderLevel),
-  ];
-};
-
-const upsertNode = (
-  accessibleNodes: AccessibleNodes,
-  node: AccessibleNode,
-  indexPath: number[],
-): AccessibleNodes => {
-  if (accessibleNodes.length == 0) {
-    return [node];
-  }
-
-  const insertIndex = indexPath[0];
-
-  if (indexPath.length === 1) {
-    return [
-      ...accessibleNodes.slice(0, insertIndex),
-      node,
-      ...accessibleNodes.slice(insertIndex),
-    ];
-  }
-
-  const currentNode = accessibleNodes[insertIndex];
-
-  return [
-    ...accessibleNodes.slice(0, insertIndex),
-    {
-      ...currentNode,
-      children: upsertNode(
-        currentNode.children || [],
-        node,
-        indexPath.slice(1),
-      ),
-    },
-    ...accessibleNodes.slice(insertIndex + 1),
-  ];
-};
-
-export const testSuite = {
-  upsertNode,
-  getHeaderInsertIndex,
 };

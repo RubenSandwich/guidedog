@@ -1,8 +1,9 @@
+import { guideDog } from './guideDog';
+
 import {
-  guideDog,
   GuideDogFilter,
   AccessibleNode,
   AccessibleNodeWithSource,
-} from './guideDog';
+} from './types';
 
 export { guideDog, GuideDogFilter, AccessibleNode, AccessibleNodeWithSource };

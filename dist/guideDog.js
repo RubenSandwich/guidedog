@@ -10,22 +10,13 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-var __spreadArrays = (this && this.__spreadArrays) || function () {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 var parse5_1 = require("parse5");
-var GuideDogFilter;
-(function (GuideDogFilter) {
-    GuideDogFilter[GuideDogFilter["Headers"] = 0] = "Headers";
-})(GuideDogFilter = exports.GuideDogFilter || (exports.GuideDogFilter = {}));
+var utilities_1 = require("./utilities");
+var types_1 = require("./types");
 exports.guideDog = function (html, options) {
     var defaults = {
-        filterType: GuideDogFilter.Headers,
+        filterType: types_1.GuideDogFilter.Headers,
         sourceCodeLoc: false,
     };
     var optionsWithDefaults = __assign(__assign({}, defaults), options);
@@ -35,78 +26,66 @@ exports.guideDog = function (html, options) {
     var tree = parseIntoAccessibleNodes(document, optionsWithDefaults);
     return tree;
 };
-var getFirstChild = function (node) {
-    return node.childNodes[0];
-};
 var parseIntoAccessibleNodes = function (node, options, accessibleNodes) {
+    var _a;
     if (accessibleNodes === void 0) { accessibleNodes = []; }
     var filterType = options.filterType, sourceCodeLoc = options.sourceCodeLoc;
     if (!node.childNodes) {
         return accessibleNodes;
     }
-    if (isHeading(node.tagName)) {
-        var level = getHeadingLevel(node.tagName);
-        var textNode = getFirstChild(node);
-        var insertIndex = getHeaderInsertIndex(accessibleNodes, level);
-        var newNode = {
-            role: 'heading',
-            name: textNode.value,
-            level: level,
-            focusable: false,
-        };
-        if (sourceCodeLoc) {
-            newNode.sourceCodeLoc = {
-                startOffset: node.sourceCodeLocation.startOffset,
-                endOffset: node.sourceCodeLocation.endOffset,
+    var _b = utilities_1.filterTypeMap(filterType, (_a = {},
+        _a[types_1.GuideDogFilter.Headers] = function () {
+            if (!utilities_1.isHeading(node.tagName)) {
+                return;
+            }
+            var level = utilities_1.getHeadingLevel(node.tagName);
+            var textNode = utilities_1.getFirstChild(node);
+            var insertPath = utilities_1.getHeaderInsertPath(accessibleNodes, level);
+            var newNode = {
+                role: 'heading',
+                name: textNode.value,
+                level: level,
+                focusable: false,
             };
-        }
-        return upsertNode(accessibleNodes, newNode, insertIndex);
+            if (sourceCodeLoc) {
+                newNode.sourceCodeLoc = {
+                    startOffset: node.sourceCodeLocation.startOffset,
+                    endOffset: node.sourceCodeLocation.endOffset,
+                };
+            }
+            return { newNode: newNode, insertPath: insertPath };
+        },
+        _a[types_1.GuideDogFilter.Links] = function () {
+            var _a;
+            if (!utilities_1.isLink(node.tagName)) {
+                return;
+            }
+            if (((_a = utilities_1.htmlAttributesToObject(node.attrs)) === null || _a === void 0 ? void 0 : _a.href) == null) {
+                return;
+            }
+            var textNode = utilities_1.getFirstChild(node);
+            var insertPath = utilities_1.getNextTopLevelInsertPath(accessibleNodes);
+            var newNode = {
+                role: 'link',
+                name: textNode.value,
+                focusable: true,
+            };
+            if (sourceCodeLoc) {
+                newNode.sourceCodeLoc = {
+                    startOffset: node.sourceCodeLocation.startOffset,
+                    endOffset: node.sourceCodeLocation.endOffset,
+                };
+            }
+            return { newNode: newNode, insertPath: insertPath };
+        },
+        _a)), newNode = _b.newNode, insertPath = _b.insertPath;
+    if (newNode) {
+        return utilities_1.upsertNode(accessibleNodes, newNode, insertPath);
     }
     var newAccessibleNodes = accessibleNodes;
     node.childNodes.forEach(function (childNode) {
         newAccessibleNodes = parseIntoAccessibleNodes(childNode, options, newAccessibleNodes);
     });
     return newAccessibleNodes;
-};
-var isHeading = function (nodeTagName) {
-    return /^h[1-6]/.test(nodeTagName);
-};
-var getHeadingLevel = function (nodeTagName) {
-    return parseInt(nodeTagName.match(/[1-6]/)[0], 10);
-};
-var getHeaderInsertIndex = function (accessibleNodes, insertHeaderLevel) {
-    if (accessibleNodes.length === 0) {
-        return [0];
-    }
-    var lastNodeIndex = accessibleNodes.length - 1;
-    var lastNode = accessibleNodes[accessibleNodes.length - 1];
-    if (lastNode.level >= insertHeaderLevel) {
-        return [lastNodeIndex + 1];
-    }
-    else if (lastNode.children == null) {
-        return [lastNodeIndex, 0];
-    }
-    return __spreadArrays([
-        lastNodeIndex
-    ], getHeaderInsertIndex(lastNode.children, insertHeaderLevel));
-};
-var upsertNode = function (accessibleNodes, node, indexPath) {
-    if (accessibleNodes.length == 0) {
-        return [node];
-    }
-    var insertIndex = indexPath[0];
-    if (indexPath.length === 1) {
-        return __spreadArrays(accessibleNodes.slice(0, insertIndex), [
-            node
-        ], accessibleNodes.slice(insertIndex));
-    }
-    var currentNode = accessibleNodes[insertIndex];
-    return __spreadArrays(accessibleNodes.slice(0, insertIndex), [
-        __assign(__assign({}, currentNode), { children: upsertNode(currentNode.children || [], node, indexPath.slice(1)) })
-    ], accessibleNodes.slice(insertIndex + 1));
-};
-exports.testSuite = {
-    upsertNode: upsertNode,
-    getHeaderInsertIndex: getHeaderInsertIndex,
 };
 //# sourceMappingURL=guideDog.js.map
