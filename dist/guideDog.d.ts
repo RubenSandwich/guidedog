@@ -26,6 +26,8 @@ export declare type AccessibleNodeWithSource = AccessibleNode & {
 };
 export declare type AccessibleNodes = AccessibleNode[] | AccessibleNodeWithSource[];
 export declare const guideDog: (html: string, options?: IGuideDogOptions) => AccessibleNodes;
-export declare const getHeaderInsertIndex: (accessibleNodes: AccessibleNodes, insertHeaderLevel: number) => number[];
-export declare const upsertNode: (accessibleNodes: AccessibleNodes, node: AccessibleNode, indexPath: number[]) => AccessibleNodes;
+export declare const testSuite: {
+    upsertNode: (accessibleNodes: AccessibleNodes, node: AccessibleNode, indexPath: number[]) => AccessibleNodes;
+    getHeaderInsertIndex: (accessibleNodes: AccessibleNodes, insertHeaderLevel: number) => number[];
+};
 export {};

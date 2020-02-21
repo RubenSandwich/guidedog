@@ -1,4 +1,6 @@
-import { guideDog, getHeaderInsertIndex, upsertNode } from './guideDog';
+import { guideDog, testSuite } from './guideDog';
+
+const { getHeaderInsertIndex, upsertNode } = testSuite;
 
 test('guideDog getHeaderInsertIndex', () => {
   expect(getHeaderInsertIndex([], 1)).toEqual([0]);

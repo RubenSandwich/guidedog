@@ -122,7 +122,7 @@ const getHeadingLevel = (nodeTagName: string): number => {
   return parseInt(nodeTagName.match(/[1-6]/)[0], 10);
 };
 
-export const getHeaderInsertIndex = (
+const getHeaderInsertIndex = (
   accessibleNodes: AccessibleNodes,
   insertHeaderLevel: number,
 ): number[] => {
@@ -145,7 +145,7 @@ export const getHeaderInsertIndex = (
   ];
 };
 
-export const upsertNode = (
+const upsertNode = (
   accessibleNodes: AccessibleNodes,
   node: AccessibleNode,
   indexPath: number[],
@@ -178,4 +178,9 @@ export const upsertNode = (
     },
     ...accessibleNodes.slice(insertIndex + 1),
   ];
+};
+
+export const testSuite = {
+  upsertNode,
+  getHeaderInsertIndex,
 };

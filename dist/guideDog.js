@@ -47,7 +47,7 @@ var parseIntoAccessibleNodes = function (node, options, accessibleNodes) {
     if (isHeading(node.tagName)) {
         var level = getHeadingLevel(node.tagName);
         var textNode = getFirstChild(node);
-        var insertIndex = exports.getHeaderInsertIndex(accessibleNodes, level);
+        var insertIndex = getHeaderInsertIndex(accessibleNodes, level);
         var newNode = {
             role: 'heading',
             name: textNode.value,
@@ -60,7 +60,7 @@ var parseIntoAccessibleNodes = function (node, options, accessibleNodes) {
                 endOffset: node.sourceCodeLocation.endOffset,
             };
         }
-        return exports.upsertNode(accessibleNodes, newNode, insertIndex);
+        return upsertNode(accessibleNodes, newNode, insertIndex);
     }
     var newAccessibleNodes = accessibleNodes;
     node.childNodes.forEach(function (childNode) {
@@ -74,7 +74,7 @@ var isHeading = function (nodeTagName) {
 var getHeadingLevel = function (nodeTagName) {
     return parseInt(nodeTagName.match(/[1-6]/)[0], 10);
 };
-exports.getHeaderInsertIndex = function (accessibleNodes, insertHeaderLevel) {
+var getHeaderInsertIndex = function (accessibleNodes, insertHeaderLevel) {
     if (accessibleNodes.length === 0) {
         return [0];
     }
@@ -88,9 +88,9 @@ exports.getHeaderInsertIndex = function (accessibleNodes, insertHeaderLevel) {
     }
     return __spreadArrays([
         lastNodeIndex
-    ], exports.getHeaderInsertIndex(lastNode.children, insertHeaderLevel));
+    ], getHeaderInsertIndex(lastNode.children, insertHeaderLevel));
 };
-exports.upsertNode = function (accessibleNodes, node, indexPath) {
+var upsertNode = function (accessibleNodes, node, indexPath) {
     if (accessibleNodes.length == 0) {
         return [node];
     }
@@ -102,7 +102,11 @@ exports.upsertNode = function (accessibleNodes, node, indexPath) {
     }
     var currentNode = accessibleNodes[insertIndex];
     return __spreadArrays(accessibleNodes.slice(0, insertIndex), [
-        __assign(__assign({}, currentNode), { children: exports.upsertNode(currentNode.children || [], node, indexPath.slice(1)) })
+        __assign(__assign({}, currentNode), { children: upsertNode(currentNode.children || [], node, indexPath.slice(1)) })
     ], accessibleNodes.slice(insertIndex + 1));
+};
+exports.testSuite = {
+    upsertNode: upsertNode,
+    getHeaderInsertIndex: getHeaderInsertIndex,
 };
 //# sourceMappingURL=guideDog.js.map
