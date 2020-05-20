@@ -60,9 +60,9 @@ const parseIntoAccessibleNodes = (
   const { newNode, insertPath } = filterTypeMap(filterType, {
     [GuideDogFilter.None]: () => {
       if (isLink(node.tagName)) {
-        return parseLinkNode(node, accessibleNodes, sourceCodeLoc);
+        return parseLinkNode(node, options, accessibleNodes);
       } else if (isHeading(node.tagName)) {
-        return parseHeaderNode(node, accessibleNodes, sourceCodeLoc);
+        return parseHeaderNode(node, options, accessibleNodes);
       }
 
       return {};
@@ -72,14 +72,14 @@ const parseIntoAccessibleNodes = (
         return {};
       }
 
-      return parseHeaderNode(node, accessibleNodes, sourceCodeLoc);
+      return parseHeaderNode(node, options, accessibleNodes);
     },
     [GuideDogFilter.Links]: () => {
       if (!isLink(node.tagName)) {
         return {};
       }
 
-      return parseLinkNode(node, accessibleNodes, sourceCodeLoc);
+      return parseLinkNode(node, options, accessibleNodes);
     },
   });
 
@@ -102,10 +102,10 @@ const parseIntoAccessibleNodes = (
 
 const parseLinkNode = (
   node: DefaultTreeElement,
+  options: IGuideDogOptions,
   accessibleNodes: AccessibleNodes = [],
-  sourceCodeLoc: boolean,
 ): PossibleNewNode => {
-  // Filter out empty links
+  // Ignore empty links
   if (htmlAttributesToObject(node.attrs)?.href == null) {
     return {};
   }
@@ -119,7 +119,7 @@ const parseLinkNode = (
     focusable: true,
   };
 
-  if (sourceCodeLoc) {
+  if (options.sourceCodeLoc) {
     (newNode as AccessibleNodeWithSource).sourceCodeLoc = {
       startOffset: node.sourceCodeLocation.startOffset,
       endOffset: node.sourceCodeLocation.endOffset,
@@ -131,21 +131,51 @@ const parseLinkNode = (
 
 const parseHeaderNode = (
   node: DefaultTreeElement,
+  options: IGuideDogOptions,
   accessibleNodes: AccessibleNodes = [],
-  sourceCodeLoc: boolean,
 ): PossibleNewNode => {
+  let name;
+  let children: AccessibleNodes = [];
+
+  if (node.childNodes[0].nodeName == '#text' && node.childNodes.length == 1) {
+    const textNode = getFirstChild(node) as DefaultTreeTextNode;
+    name = textNode.value;
+  } else if (node.childNodes.length > 0) {
+    node.childNodes.forEach((childNode) => {
+      children = parseIntoAccessibleNodes(
+        childNode as DefaultTreeElement,
+        options,
+        children,
+      );
+    });
+
+    for (let index = 0; index < children.length; index++) {
+      const searchNode = children[index];
+
+      if (searchNode.name !== '') {
+        name = searchNode.name;
+        break;
+      }
+    }
+  } else {
+    return {};
+  }
+
   const level = getHeadingLevel(node.tagName);
-  const textNode = getFirstChild(node) as DefaultTreeTextNode;
   const insertPath = getHeaderInsertPath(accessibleNodes, level);
 
   const newNode: AccessibleNode = {
     role: 'heading',
-    name: textNode.value,
+    name,
     level,
     focusable: false,
   };
 
-  if (sourceCodeLoc) {
+  if (children.length > 0) {
+    newNode.children = children;
+  }
+
+  if (options.sourceCodeLoc) {
     (newNode as AccessibleNodeWithSource).sourceCodeLoc = {
       startOffset: node.sourceCodeLocation.startOffset,
       endOffset: node.sourceCodeLocation.endOffset,

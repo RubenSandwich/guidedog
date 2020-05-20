@@ -236,32 +236,34 @@ test('guideDog link with header', () => {
   ]);
 });
 
-// test('guideDog link within a header', () => {
-//   const accessibilityTree = guideDog('<h1><a href="">link</a></h1>', {
-//     sourceCodeLoc: true,
-//   });
+test('guideDog link within a header', () => {
+  const accessibilityTree = guideDog('<h1><a href="">link</a></h1>', {
+    sourceCodeLoc: true,
+  });
 
-//   expect(accessibilityTree).toEqual([
-//     {
-//       role: 'heading',
-//       name: 'link',
-//       level: 1,
-//       focusable: false,
-//       sourceCodeLoc: {
-//         startOffset: 0,
-//         endOffset: 15,
-//       },
-//       children: [
-//         {
-//           role: 'link',
-//           name: 'link',
-//           focusable: true,
-//           sourceCodeLoc: {
-//             startOffset: 15,
-//             endOffset: 34,
-//           },
-//         },
-//       ],
-//     },
-//   ]);
-// });
+  console.log(accessibilityTree);
+
+  expect(accessibilityTree).toEqual([
+    {
+      role: 'heading',
+      name: 'link',
+      level: 1,
+      focusable: false,
+      sourceCodeLoc: {
+        startOffset: 0,
+        endOffset: 28,
+      },
+      children: [
+        {
+          role: 'link',
+          name: 'link',
+          focusable: true,
+          sourceCodeLoc: {
+            startOffset: 4,
+            endOffset: 23,
+          },
+        },
+      ],
+    },
+  ]);
+});
