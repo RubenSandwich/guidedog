@@ -1,3 +1,8 @@
 {
-  "cSpell.ignoreWords": ["upsert", "focusable"]
+  "cSpell.ignoreWords": [
+    "upsert",
+    "focusable"
+  ],
+  "files.autoSave": "onFocusChange",
+  "editor.formatOnSave": true
 }

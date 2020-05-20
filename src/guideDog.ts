@@ -17,6 +17,7 @@ import {
   AccessibleNode,
   AccessibleNodes,
   GuideDogFilter,
+  PossibleNewNode,
   AccessibleNodeWithSource,
 } from './types';
 
@@ -25,7 +26,7 @@ export const guideDog = (
   options?: IGuideDogOptions,
 ): AccessibleNodes => {
   const defaults: IGuideDogOptions = {
-    filterType: GuideDogFilter.Headers,
+    filterType: GuideDogFilter.None,
     sourceCodeLoc: false,
   };
 
@@ -57,57 +58,28 @@ const parseIntoAccessibleNodes = (
   }
 
   const { newNode, insertPath } = filterTypeMap(filterType, {
+    [GuideDogFilter.None]: () => {
+      if (isLink(node.tagName)) {
+        return parseLinkNode(node, accessibleNodes, sourceCodeLoc);
+      } else if (isHeading(node.tagName)) {
+        return parseHeaderNode(node, accessibleNodes, sourceCodeLoc);
+      }
+
+      return {};
+    },
     [GuideDogFilter.Headers]: () => {
       if (!isHeading(node.tagName)) {
-        return;
+        return {};
       }
 
-      const level = getHeadingLevel(node.tagName);
-      const textNode = getFirstChild(node) as DefaultTreeTextNode;
-      const insertPath = getHeaderInsertPath(accessibleNodes, level);
-
-      const newNode: AccessibleNode = {
-        role: 'heading',
-        name: textNode.value,
-        level,
-        focusable: false,
-      };
-
-      if (sourceCodeLoc) {
-        (newNode as AccessibleNodeWithSource).sourceCodeLoc = {
-          startOffset: node.sourceCodeLocation.startOffset,
-          endOffset: node.sourceCodeLocation.endOffset,
-        };
-      }
-
-      return { newNode, insertPath };
+      return parseHeaderNode(node, accessibleNodes, sourceCodeLoc);
     },
     [GuideDogFilter.Links]: () => {
       if (!isLink(node.tagName)) {
-        return;
+        return {};
       }
 
-      if (htmlAttributesToObject(node.attrs)?.href == null) {
-        return;
-      }
-
-      const textNode = getFirstChild(node) as DefaultTreeTextNode;
-      const insertPath = getNextTopLevelInsertPath(accessibleNodes);
-
-      const newNode: AccessibleNode = {
-        role: 'link',
-        name: textNode.value,
-        focusable: true,
-      };
-
-      if (sourceCodeLoc) {
-        (newNode as AccessibleNodeWithSource).sourceCodeLoc = {
-          startOffset: node.sourceCodeLocation.startOffset,
-          endOffset: node.sourceCodeLocation.endOffset,
-        };
-      }
-
-      return { newNode, insertPath };
+      return parseLinkNode(node, accessibleNodes, sourceCodeLoc);
     },
   });
 
@@ -117,7 +89,7 @@ const parseIntoAccessibleNodes = (
 
   let newAccessibleNodes = accessibleNodes;
 
-  node.childNodes.forEach(childNode => {
+  node.childNodes.forEach((childNode) => {
     newAccessibleNodes = parseIntoAccessibleNodes(
       childNode as DefaultTreeElement,
       options,
@@ -126,4 +98,59 @@ const parseIntoAccessibleNodes = (
   });
 
   return newAccessibleNodes;
+};
+
+const parseLinkNode = (
+  node: DefaultTreeElement,
+  accessibleNodes: AccessibleNodes = [],
+  sourceCodeLoc: boolean,
+): PossibleNewNode => {
+  // Filter out empty links
+  if (htmlAttributesToObject(node.attrs)?.href == null) {
+    return {};
+  }
+
+  const textNode = getFirstChild(node) as DefaultTreeTextNode;
+  const insertPath = getNextTopLevelInsertPath(accessibleNodes);
+
+  const newNode: AccessibleNode = {
+    role: 'link',
+    name: textNode.value,
+    focusable: true,
+  };
+
+  if (sourceCodeLoc) {
+    (newNode as AccessibleNodeWithSource).sourceCodeLoc = {
+      startOffset: node.sourceCodeLocation.startOffset,
+      endOffset: node.sourceCodeLocation.endOffset,
+    };
+  }
+
+  return { newNode, insertPath };
+};
+
+const parseHeaderNode = (
+  node: DefaultTreeElement,
+  accessibleNodes: AccessibleNodes = [],
+  sourceCodeLoc: boolean,
+): PossibleNewNode => {
+  const level = getHeadingLevel(node.tagName);
+  const textNode = getFirstChild(node) as DefaultTreeTextNode;
+  const insertPath = getHeaderInsertPath(accessibleNodes, level);
+
+  const newNode: AccessibleNode = {
+    role: 'heading',
+    name: textNode.value,
+    level,
+    focusable: false,
+  };
+
+  if (sourceCodeLoc) {
+    (newNode as AccessibleNodeWithSource).sourceCodeLoc = {
+      startOffset: node.sourceCodeLocation.startOffset,
+      endOffset: node.sourceCodeLocation.endOffset,
+    };
+  }
+
+  return { newNode, insertPath };
 };

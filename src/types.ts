@@ -1,6 +1,7 @@
 export enum GuideDogFilter {
   Headers = 'Headers',
   Links = 'Links',
+  None = 'None',
 }
 
 export interface IGuideDogOptions {
@@ -10,13 +11,13 @@ export interface IGuideDogOptions {
 
 export type TreeIndexPath = number[];
 
-export type FilterTypeMapReturn = {
+export type PossibleNewNode = {
   newNode?: AccessibleNode;
   insertPath?: TreeIndexPath;
 };
 
 export type FilterTypeMap = {
-  [f in keyof typeof GuideDogFilter]: () => FilterTypeMapReturn;
+  [f in keyof typeof GuideDogFilter]: () => PossibleNewNode;
 };
 
 interface SourceLocation {

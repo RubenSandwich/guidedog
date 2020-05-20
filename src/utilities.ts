@@ -6,7 +6,7 @@ import {
   TreeIndexPath,
   GuideDogFilter,
   FilterTypeMap,
-  FilterTypeMapReturn,
+  PossibleNewNode,
 } from './types';
 
 export const isHeading = (nodeTagName: string): boolean => {
@@ -17,6 +17,10 @@ export const isLink = (nodeTagName: string): boolean => {
   return nodeTagName === 'a';
 };
 
+export const isList = (nodeTagName: string): boolean => {
+  return nodeTagName === 'ul' || nodeTagName === 'ol';
+};
+
 export const getFirstChild = (node: DefaultTreeElement) => {
   return node.childNodes[0];
 };
@@ -24,12 +28,14 @@ export const getFirstChild = (node: DefaultTreeElement) => {
 export const filterTypeMap = (
   filter: GuideDogFilter,
   filterTypeMap: FilterTypeMap,
-): FilterTypeMapReturn => {
+): PossibleNewNode => {
   switch (filter) {
     case GuideDogFilter.Headers:
-      return filterTypeMap[GuideDogFilter.Headers]() ?? {};
+      return filterTypeMap[GuideDogFilter.Headers]();
     case GuideDogFilter.Links:
-      return filterTypeMap[GuideDogFilter.Links]() ?? {};
+      return filterTypeMap[GuideDogFilter.Links]();
+    case GuideDogFilter.None:
+      return filterTypeMap[GuideDogFilter.None]();
     default:
       const _exhaustiveCheck: never = filter;
   }
